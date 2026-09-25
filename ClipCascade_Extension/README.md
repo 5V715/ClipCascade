@@ -69,6 +69,8 @@ To cut a release:
    git push origin extension-v1.0.1
    ```
 
+Or, without pushing a tag: open **Actions → Chrome extension → Run workflow**, pick the branch and tick **release**. The job then creates the `extension-v<version>` tag on the commit it built, and refuses if that tag already exists.
+
 The release job fails if the tag doesn't match `package.json`. It also marks the release as not "Latest", so the desktop and server downloads stay the repository's latest release.
 
 See [DESIGN.md](DESIGN.md) for the architecture, the protocol details and the Manifest V3 constraints behind them.
