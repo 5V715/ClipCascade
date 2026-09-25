@@ -51,4 +51,24 @@ The crypto tests check the extension against vectors made by the desktop client'
 SERVER=http://127.0.0.1:8080 CC_USER=admin CC_PASS=admin123 xvfb-run -a npm run test:e2e
 ```
 
+## Continuous integration and releases
+
+`.github/workflows/extension.yml` runs on every push or pull request that touches this folder. It has three jobs:
+
+- **test:** typecheck, unit tests (including the Python interop check), build, and a packaged `ClipCascade-Extension-<version>.zip` with `SHA256SUMS.txt`, uploaded as a workflow artifact.
+- **e2e:** builds and starts the server from this repository, then runs `npm run test:e2e` against it in Chromium.
+- **release:** runs only for tags named `extension-v<version>`, and only after both jobs above pass. It publishes the zip and checksums as a GitHub release.
+
+To cut a release:
+
+1. Bump `version` in `package.json`. The build copies it into `manifest.json`.
+2. Commit, then tag and push:
+
+   ```sh
+   git tag extension-v1.0.1
+   git push origin extension-v1.0.1
+   ```
+
+The release job fails if the tag doesn't match `package.json`. It also marks the release as not "Latest", so the desktop and server downloads stay the repository's latest release.
+
 See [DESIGN.md](DESIGN.md) for the architecture, the protocol details and the Manifest V3 constraints behind them.
